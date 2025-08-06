@@ -7,6 +7,7 @@ import {
   UserContainerExistsException,
   UserContainerNotFoundException,
 } from './maude-container.errors'
+import { JwtStrategy } from 'src/auth/strategies/jwt.strategy'
 
 @Injectable()
 export class MaudeContainerService implements OnModuleDestroy {
@@ -15,8 +16,12 @@ export class MaudeContainerService implements OnModuleDestroy {
 
   private readonly MAX_CONTAINERS = 10
 
-  async createUserContainer(userId: string): Promise<string> {
-    const existing = this.userContainers.get(userId)
+  constructor(private readonly jwtStrategy: JwtStrategy) {}
+
+  async createUserContainer(user: Express.User): Promise<string> {
+    const validatedUser = this.jwtStrategy.validate(user)
+
+    const existing = this.userContainers.get(validatedUser.id)
     if (existing) {
       throw new UserContainerExistsException(existing)
     }
@@ -38,16 +43,18 @@ export class MaudeContainerService implements OnModuleDestroy {
 
     await container.start()
 
-    this.userContainers.set(userId, container.id)
+    this.userContainers.set(validatedUser.id, container.id)
 
     return container.id
   }
 
   async executeCode(
-    userId: string,
+    user: Express.User,
     code: string,
   ): Promise<{ stdout: string; stderr: string }> {
-    const containerId = this.userContainers.get(userId)
+    const validatedUser = this.jwtStrategy.validate(user)
+
+    const containerId = this.userContainers.get(validatedUser.id)
     if (!containerId) throw new Error('Please, create a container first')
 
     const container = this.docker.getContainer(containerId)
@@ -97,11 +104,13 @@ export class MaudeContainerService implements OnModuleDestroy {
     })
   }
 
-  async removeUserContainer(userId: string): Promise<void> {
-    const containerId: string = this.userContainers.get(userId)
+  async removeUserContainer(user: Express.User): Promise<void> {
+    const validatedUser = this.jwtStrategy.validate(user)
+
+    const containerId: string = this.userContainers.get(validatedUser.id)
 
     if (!containerId) {
-      throw new UserContainerNotFoundException(userId)
+      throw new UserContainerNotFoundException(validatedUser.id)
     }
 
     const container: Docker.Container = this.docker.getContainer(containerId)
@@ -110,7 +119,7 @@ export class MaudeContainerService implements OnModuleDestroy {
 
     await container.remove()
 
-    this.userContainers.delete(userId)
+    this.userContainers.delete(validatedUser.id)
   }
 
   async onModuleDestroy() {

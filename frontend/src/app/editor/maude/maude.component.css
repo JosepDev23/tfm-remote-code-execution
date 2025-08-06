@@ -50,6 +50,24 @@
   outline: none;
 }
 
+.console {
+  flex: 1;
+  background-color: #1e1e1e;
+  padding: 10px;
+}
+
+.console textarea {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  resize: none;
+  color: #d4d4d4;
+  font-size: 14px;
+  font-family: 'Source Code Pro', monospace;
+  outline: none;
+}
+
 .status-bar {
   height: 24px;
   background-color: #007acc;

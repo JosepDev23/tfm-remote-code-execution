@@ -2,10 +2,23 @@
   <main class="main">
     <div class="tabs">
       <div class="tab active">main.maude</div>
+      <div class="tab active">
+        <button (click)="createContainer()">CREATE CONTAINER</button>
+      </div>
+      <div class="tab active">
+        <button (click)="executeCode()">EXECUTE CODE</button>
+      </div>
+      <div class="tab active">
+        <button (click)="deleteContainer()">DELETE CONTAINER</button>
+      </div>
     </div>
 
     <div class="editor">
-      <textarea spellcheck="false">// Tu código Maude aquí</textarea>
+      <textarea [value]="code" spellcheck="false"></textarea>
+    </div>
+
+    <div class="console">
+      <textarea [value]="output" spellcheck="false"></textarea>
     </div>
   </main>
 </div>

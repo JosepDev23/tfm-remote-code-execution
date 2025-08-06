@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Param, Post } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common'
 import {
   ApiBody,
   ApiOperation,
@@ -7,8 +16,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { MaudeContainerService } from './maude-container.service'
-import User from 'src/models/user.model'
 import MaudeCode from 'src/models/maude-code.model'
+import { JwtGuard } from 'src/auth/guards/jwt.guard'
+import { Request } from 'express'
 
 @ApiTags('MaudeContainer Controller')
 @Controller('maude-container')
@@ -16,6 +26,7 @@ export class MaudeContainerController {
   constructor(private readonly maudeContainerService: MaudeContainerService) {}
 
   @Post()
+  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Create User Container' })
   @ApiBody({ description: 'User' })
   @ApiResponse({
@@ -23,28 +34,27 @@ export class MaudeContainerController {
     description: 'User Container Created',
     type: String,
   })
-  createUserContainer(@Body() user: User): Promise<string> {
-    return this.maudeContainerService.createUserContainer(user.id)
+  createUserContainer(@Req() req: Request): Promise<string> {
+    return this.maudeContainerService.createUserContainer(req.user)
   }
 
   @Post('exec-code')
+  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Exec Maude Code' })
   @ApiBody({ description: 'Maude code' })
   @ApiResponse({ status: 201, description: 'Code Executed', type: String })
   execMaudeCode(
+    @Req() req: Request,
     @Body() maudeCode: MaudeCode,
   ): Promise<{ stdout: string; stderr: string }> {
-    return this.maudeContainerService.executeCode(
-      maudeCode.userId,
-      maudeCode.code,
-    )
+    return this.maudeContainerService.executeCode(req.user, maudeCode.code)
   }
 
-  @Delete(':userId')
+  @Delete()
+  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Remove User Container' })
-  @ApiParam({ name: 'userId', required: true })
   @ApiResponse({ status: 200, description: 'User Container Removed' })
-  removeUserContainer(@Param('userId') userId: string): Promise<void> {
-    return this.maudeContainerService.removeUserContainer(userId)
+  removeUserContainer(@Req() req: Request): Promise<void> {
+    return this.maudeContainerService.removeUserContainer(req.user)
   }
 }
