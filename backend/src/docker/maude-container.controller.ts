@@ -25,19 +25,6 @@ import { Request } from 'express'
 export class MaudeContainerController {
   constructor(private readonly maudeContainerService: MaudeContainerService) {}
 
-  @Post()
-  @UseGuards(JwtGuard)
-  @ApiOperation({ summary: 'Create User Container' })
-  @ApiBody({ description: 'User' })
-  @ApiResponse({
-    status: 201,
-    description: 'User Container Created',
-    type: String,
-  })
-  createUserContainer(@Req() req: Request): Promise<string> {
-    return this.maudeContainerService.createUserContainer(req.user)
-  }
-
   @Post('exec-code')
   @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Exec Maude Code' })

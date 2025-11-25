@@ -8,6 +8,7 @@ import {
   UserContainerNotFoundException,
 } from './maude-container.errors'
 import { JwtStrategy } from 'src/auth/strategies/jwt.strategy'
+import { Cron, CronExpression } from '@nestjs/schedule'
 
 @Injectable()
 export class MaudeContainerService implements OnModuleDestroy {
@@ -15,6 +16,9 @@ export class MaudeContainerService implements OnModuleDestroy {
   private userContainers = new Map<string, string>()
 
   private readonly MAX_CONTAINERS = 10
+
+  private lastActivity = new Map<string, number>() // userId -> timestamp
+  private readonly INACTIVITY_LIMIT = 10 * 60 * 1000 // 10 minutes
 
   constructor(private readonly jwtStrategy: JwtStrategy) {}
 
@@ -52,10 +56,13 @@ export class MaudeContainerService implements OnModuleDestroy {
     user: Express.User,
     code: string,
   ): Promise<{ stdout: string; stderr: string }> {
+    // First, validate user and update last activity
     const validatedUser = this.jwtStrategy.validate(user)
+    this.lastActivity.set(validatedUser.id, Date.now())
 
-    const containerId = this.userContainers.get(validatedUser.id)
-    if (!containerId) throw new Error('Please, create a container first')
+    // Then, do everything else
+    let containerId = this.userContainers.get(validatedUser.id)
+    if (!containerId) containerId = await this.createUserContainer(user)
 
     const container = this.docker.getContainer(containerId)
 
@@ -116,15 +123,43 @@ export class MaudeContainerService implements OnModuleDestroy {
     const container: Docker.Container = this.docker.getContainer(containerId)
 
     await container.stop()
-
     await container.remove()
 
     this.userContainers.delete(validatedUser.id)
+
+    this.lastActivity.delete(validatedUser.id)
   }
 
   async onModuleDestroy() {
     for (const userId of this.userContainers.keys()) {
       await this.removeUserContainer(userId)
+    }
+  }
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  private async cleanupInactiveContainers() {
+    const now = Date.now()
+
+    for (const [userId, last] of this.lastActivity.entries()) {
+      if (now - last > this.INACTIVITY_LIMIT) {
+        const containerId = this.userContainers.get(userId)
+        if (!containerId) continue
+
+        try {
+          const container = this.docker.getContainer(containerId)
+          await container.stop()
+          await container.remove()
+        } catch (e) {
+          console.error('Error cleaning container', containerId, e)
+        }
+
+        this.userContainers.delete(userId)
+        this.lastActivity.delete(userId)
+
+        console.log(
+          `🧹 Contenedor del usuario ${userId} eliminado por inactividad`,
+        )
+      }
     }
   }
 

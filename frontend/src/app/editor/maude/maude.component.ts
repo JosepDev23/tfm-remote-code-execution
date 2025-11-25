@@ -37,17 +37,6 @@ export class MaudeComponent implements OnInit {
     })
   }
 
-  createContainer() {
-    this.maudeService.createContainer().subscribe({
-      next: (response) => {
-        console.log('Container created successfully:', response)
-      },
-      error: (error) => {
-        console.error('Error creating container:', error)
-      },
-    })
-  }
-
   executeCode() {
     this.maudeService.executeCode(this.code).subscribe({
       next: (response) => {
