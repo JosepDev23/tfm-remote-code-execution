@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core'
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms'
 import { AuthService } from '../services/auth/auth.service'
@@ -25,6 +27,25 @@ export class RegisterComponent implements OnInit {
     private readonly router: Router
   ) {}
 
+  // Custom validator for password strength
+  passwordStrengthValidator(
+    control: AbstractControl
+  ): ValidationErrors | null {
+    const value = control.value
+    if (!value) {
+      return null
+    }
+
+    const hasUpperCase = /[A-Z]/.test(value)
+    const hasLowerCase = /[a-z]/.test(value)
+    const hasNumeric = /[0-9]/.test(value)
+    const isValidLength = value.length >= 8
+
+    const passwordValid = hasUpperCase && hasLowerCase && hasNumeric && isValidLength
+
+    return !passwordValid ? { passwordStrength: true } : null
+  }
+
   ngOnInit(): void {
     this.registerFormGroup = new FormGroup({
       username: new FormControl('', [
@@ -33,10 +54,22 @@ export class RegisterComponent implements OnInit {
       ]),
       password: new FormControl('', [
         Validators.required,
-        Validators.minLength(6),
+        Validators.minLength(8),
+        this.passwordStrengthValidator,
       ]),
       confirmPassword: new FormControl('', Validators.required),
     })
+  }
+
+  // Helper method to get password requirements status
+  getPasswordRequirements() {
+    const password = this.registerFormGroup.get('password')?.value || ''
+    return {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+    }
   }
 
   onSubmit(): void {

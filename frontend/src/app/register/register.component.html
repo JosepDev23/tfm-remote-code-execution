@@ -28,18 +28,29 @@
   <div class="form-field">
     <label for="password">Password</label>
     <input id="password" type="password" formControlName="password" />
-    @if(registerFormGroup.get('password')?.invalid &&
-    registerFormGroup.get('password')?.touched) {
-    <div>
-      @if (registerFormGroup.get('password')?.errors?.['required']) {
-      <small> Password is mandatory </small>
-      }
-      @if(registerFormGroup.get('password')?.errors?.['minlength']) {
-      <small> Password must be at least 6 characters </small>
-      }
-    </div>
+    
+    @if(registerFormGroup.get('password')?.touched) {
+      <div class="password-requirements">
+        <div class="requirement" [class.met]="getPasswordRequirements().minLength">
+          <span class="icon">{{ getPasswordRequirements().minLength ? '✓' : '○' }}</span>
+          At least 8 characters
+        </div>
+        <div class="requirement" [class.met]="getPasswordRequirements().hasUpperCase">
+          <span class="icon">{{ getPasswordRequirements().hasUpperCase ? '✓' : '○' }}</span>
+          One uppercase letter
+        </div>
+        <div class="requirement" [class.met]="getPasswordRequirements().hasLowerCase">
+          <span class="icon">{{ getPasswordRequirements().hasLowerCase ? '✓' : '○' }}</span>
+          One lowercase letter
+        </div>
+        <div class="requirement" [class.met]="getPasswordRequirements().hasNumber">
+          <span class="icon">{{ getPasswordRequirements().hasNumber ? '✓' : '○' }}</span>
+          One number
+        </div>
+      </div>
     }
   </div>
+
   <div class="form-field">
     <label for="confirmPassword">Confirm Password</label>
     <input id="confirmPassword" type="password" formControlName="confirmPassword" />

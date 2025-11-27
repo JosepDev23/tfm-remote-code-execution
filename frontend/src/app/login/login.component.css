@@ -14,8 +14,20 @@ form {
 .form-title {
   color: #cfd2dc;
   font-size: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
+
+.error-message {
+  background-color: rgba(255, 107, 107, 0.1);
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
 
 .form-field {
   display: flex;

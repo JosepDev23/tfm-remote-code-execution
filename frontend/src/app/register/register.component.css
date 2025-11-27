@@ -118,3 +118,36 @@ button:disabled {
   color: #3c919c;
   text-decoration: underline;
 }
+
+.password-requirements {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background-color: rgba(44, 47, 58, 0.5);
+  border-radius: 0.5rem;
+  border: 1px solid #2c2f3a;
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  margin: 0.4rem 0;
+  transition: color 0.3s ease;
+}
+
+.requirement.met {
+  color: #51cf66;
+}
+
+.requirement .icon {
+  font-weight: bold;
+  font-size: 1rem;
+  min-width: 1.2rem;
+  text-align: center;
+}
+
+.requirement.met .icon {
+  color: #51cf66;
+}

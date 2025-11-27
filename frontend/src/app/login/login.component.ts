@@ -17,6 +17,7 @@ import { Router, RouterLink } from '@angular/router'
 })
 export class LoginComponent implements OnInit {
   loginFormGroup!: FormGroup
+  errorMessage: string = ''
 
   constructor(
     private readonly authService: AuthService,
@@ -31,6 +32,8 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.errorMessage = ''
+
     if (this.loginFormGroup.valid) {
       const { username, password } = this.loginFormGroup.value
       console.log('Login submitted:', { username, password })
@@ -41,7 +44,12 @@ export class LoginComponent implements OnInit {
         },
         error: (error) => {
           console.error('Login failed:', error)
-          // Handle login failure, e.g., show an error message
+          if (error.status === 401) {
+            this.errorMessage = 'Invalid username or password'
+          } else {
+            this.errorMessage =
+              error.error?.message || 'Login failed. Please try again.'
+          }
         },
       })
     }

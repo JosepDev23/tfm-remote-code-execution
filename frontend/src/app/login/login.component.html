@@ -1,5 +1,10 @@
 <form [formGroup]="loginFormGroup" (ngSubmit)="onSubmit()">
   <h2 class="form-title">Welcome</h2>
+  
+  @if(errorMessage) {
+    <div class="error-message">{{ errorMessage }}</div>
+  }
+  
   <div class="form-field">
     <label for="username">Username</label>
     <input id="username" type="text" formControlName="username" />
