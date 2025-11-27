@@ -20,6 +20,13 @@ export class AuthService {
       )
   }
 
+  register(username: string, password: string): Observable<any> {
+    return this.httpClient.post(`${this.apiUrl}/register`, {
+      username,
+      password,
+    })
+  }
+
   status(): Observable<any> {
     return this.httpClient.get(`${this.apiUrl}/status`, {
       headers: {
@@ -31,4 +38,5 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('token')
   }
+
 }

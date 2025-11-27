@@ -14,7 +14,7 @@ form {
 .form-title {
   color: #cfd2dc;
   font-size: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .form-field {
@@ -26,11 +26,13 @@ form {
 label {
   color: #cfd2dc;
   font-size: 1.1rem;
+  margin-bottom: 0.5rem;
 }
 
 small {
   color: #ff6b6b;
   font-size: 0.9rem;
+  margin-top: 0.25rem;
 }
 
 input {
@@ -41,6 +43,12 @@ input {
   color: #cfd2dc;
   font-size: 1rem;
   width: 23rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2d7781;
 }
 
 button {
@@ -54,31 +62,59 @@ button {
   font-size: 1.3rem;
   cursor: pointer;
   width: 100%;
+  transition: all 0.3s ease;
 }
 
 button:hover {
   background: #3c919c;
   background: linear-gradient(90deg, #3c919c, #31737e);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(45, 119, 129, 0.3);
 }
+
 button:disabled {
   background: #6c757d;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.register-link {
+.error-message {
+  background-color: rgba(255, 107, 107, 0.1);
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.success-message {
+  background-color: rgba(81, 207, 102, 0.1);
+  border: 1px solid #51cf66;
+  color: #51cf66;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.login-link {
   color: #cfd2dc;
   font-size: 0.95rem;
   margin-top: -1rem;
 }
 
-.register-link a {
+.login-link a {
   color: #2d7781;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
-.register-link a:hover {
+.login-link a:hover {
   color: #3c919c;
   text-decoration: underline;
 }
