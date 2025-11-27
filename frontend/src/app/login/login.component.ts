@@ -18,6 +18,7 @@ import { Router, RouterLink } from '@angular/router'
 export class LoginComponent implements OnInit {
   loginFormGroup!: FormGroup
   errorMessage: string = ''
+  showPassword: boolean = false
 
   constructor(
     private readonly authService: AuthService,
@@ -53,5 +54,9 @@ export class LoginComponent implements OnInit {
         },
       })
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword
   }
 }

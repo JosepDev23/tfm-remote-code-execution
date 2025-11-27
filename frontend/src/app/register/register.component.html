@@ -27,7 +27,21 @@
   </div>
   <div class="form-field">
     <label for="password">Password</label>
-    <input id="password" type="password" formControlName="password" />
+    <div class="password-input-wrapper">
+      <input 
+        id="password" 
+        [type]="showPassword ? 'text' : 'password'" 
+        formControlName="password" 
+      />
+      <button 
+        type="button" 
+        class="toggle-password" 
+        (click)="togglePasswordVisibility()"
+        aria-label="Toggle password visibility"
+      >
+        {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+      </button>
+    </div>
     
     @if(registerFormGroup.get('password')?.touched) {
       <div class="password-requirements">
@@ -53,7 +67,21 @@
 
   <div class="form-field">
     <label for="confirmPassword">Confirm Password</label>
-    <input id="confirmPassword" type="password" formControlName="confirmPassword" />
+    <div class="password-input-wrapper">
+      <input 
+        id="confirmPassword" 
+        [type]="showConfirmPassword ? 'text' : 'password'" 
+        formControlName="confirmPassword" 
+      />
+      <button 
+        type="button" 
+        class="toggle-password" 
+        (click)="toggleConfirmPasswordVisibility()"
+        aria-label="Toggle confirm password visibility"
+      >
+        {{ showConfirmPassword ? '👁️' : '👁️‍🗨️' }}
+      </button>
+    </div>
     @if(registerFormGroup.get('confirmPassword')?.invalid &&
     registerFormGroup.get('confirmPassword')?.touched) {
     <div>

@@ -21,6 +21,8 @@ export class RegisterComponent implements OnInit {
   registerFormGroup!: FormGroup
   errorMessage: string = ''
   successMessage: string = ''
+  showPassword: boolean = false
+  showConfirmPassword: boolean = false
 
   constructor(
     private readonly authService: AuthService,
@@ -102,5 +104,13 @@ export class RegisterComponent implements OnInit {
         },
       })
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword
   }
 }

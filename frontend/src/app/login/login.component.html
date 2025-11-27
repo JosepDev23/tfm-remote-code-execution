@@ -20,7 +20,21 @@
   </div>
   <div class="form-field">
     <label for="password">Password</label>
-    <input id="password" type="password" formControlName="password" />
+    <div class="password-input-wrapper">
+      <input 
+        id="password" 
+        [type]="showPassword ? 'text' : 'password'" 
+        formControlName="password" 
+      />
+      <button 
+        type="button" 
+        class="toggle-password" 
+        (click)="togglePasswordVisibility()"
+        aria-label="Toggle password visibility"
+      >
+        {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+      </button>
+    </div>
     @if(loginFormGroup.get('password')?.invalid &&
     loginFormGroup.get('password')?.touched) {
     <div>
@@ -30,6 +44,7 @@
     </div>
     }
   </div>
+
   <button type="submit" [disabled]="loginFormGroup.invalid">Login</button>
   
   <div class="register-link">
