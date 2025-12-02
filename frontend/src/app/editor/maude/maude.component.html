@@ -4,9 +4,6 @@
     <div class="activity-item active" title="Explorer">
       <span class="activity-icon">📁</span>
     </div>
-    <div class="activity-item" title="Search">
-      <span class="activity-icon">🔍</span>
-    </div>
     <div class="activity-item" (click)="goBack()" title="Back to Home">
       <span class="activity-icon">🏠</span>
     </div>
@@ -22,12 +19,33 @@
         <div class="folder-header">
           <span class="folder-icon">▼</span>
           <span class="folder-name">MAUDE PROJECT</span>
+          <button class="folder-action-btn" (click)="createFile()" title="New File">
+            <span>+</span>
+          </button>
         </div>
         <div class="file-list">
-          <div class="file-item active">
-            <span class="file-icon">📄</span>
-            <span class="file-name">main.maude</span>
-          </div>
+          @for (file of files; track file.id) {
+            <div class="file-item" [class.active]="file.id === activeFileId" (click)="switchFile(file.id)">
+              <span class="file-icon">📄</span>
+              @if (renamingFileId === file.id) {
+                <input 
+                  class="file-rename-input"
+                  type="text"
+                  [value]="file.name"
+                  (blur)="finishRenaming(file.id, $any($event.target).value)"
+                  (keydown)="finishRenaming(file.id, $any($event.target).value, $event)"
+                  (click)="$event.stopPropagation()"
+                />
+              } @else {
+                <span class="file-name" (dblclick)="startRenaming(file.id, $event)">{{ file.name }}</span>
+              }
+              @if (files.length > 1) {
+                <button class="file-delete-btn" (click)="deleteFile(file.id); $event.stopPropagation()" title="Delete File">
+                  <span>×</span>
+                </button>
+              }
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -39,8 +57,7 @@
     <div class="tab-bar">
       <div class="tab active">
         <span class="tab-icon">📄</span>
-        <span class="tab-label">main.maude</span>
-        <span class="tab-close">×</span>
+        <span class="tab-label">{{ getActiveFile()?.name || 'Untitled' }}</span>
       </div>
       <div class="tab-actions">
         <button 
@@ -70,7 +87,8 @@
         </div>
         <textarea 
           class="code-editor"
-          [(ngModel)]="code" 
+          [ngModel]="getActiveFile()?.content" 
+          (ngModelChange)="getActiveFile() && (getActiveFile()!.content = $event)"
           spellcheck="false"
           placeholder="Start coding..."
           (input)="onCodeChange()"
