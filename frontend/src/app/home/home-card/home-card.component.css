@@ -2,22 +2,107 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-
-  width: 17rem;
-  height: 11rem;
-
-  background-color: #242930;
-  border-radius: 1rem;
-}
-
-.card-wrapper:hover {
-  background-color: #2c2f3a;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  justify-content: space-between;
+  padding: 2rem 1.5rem;
+  
+  width: 18rem;
+  height: 15rem;
+  
+  background: linear-gradient(145deg, #2a2e38, #1f2229);
+  border-radius: 1.2rem;
+  border: 2px solid transparent;
+  
+  position: relative;
+  overflow: hidden;
+  
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 
+/* Subtle gradient overlay */
+.card-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--accent-color, #4caf50) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-wrapper:hover::before {
+  opacity: 0.08;
+}
+
+.card-wrapper:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--accent-color, #4caf50);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(var(--accent-color-rgb, 76, 175, 80), 0.2);
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-wrapper:hover .icon-container {
+  transform: scale(1.1);
+}
+
 img {
-  width: 9rem;
-  height: 9rem;
+  width: 7rem;
+  height: 7rem;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  transition: filter 0.3s ease;
+}
+
+.card-wrapper:hover img {
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #e8eaed;
+  margin: 0;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.card-wrapper:hover .card-title {
+  color: var(--accent-color, #4caf50);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-wrapper {
+    width: 15rem;
+    height: 13rem;
+    padding: 1.5rem 1rem;
+  }
+  
+  img {
+    width: 6rem;
+    height: 6rem;
+  }
+  
+  .card-title {
+    font-size: 1.2rem;
+  }
 }

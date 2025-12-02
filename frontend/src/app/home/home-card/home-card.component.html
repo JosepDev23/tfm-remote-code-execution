@@ -1,3 +1,6 @@
-<div class="card-wrapper" (click)="openEditor()">
-  <img [src]="icon" alt="{{ title }} icon" />
+<div class="card-wrapper" (click)="openEditor()" [style.--accent-color]="color">
+  <div class="icon-container">
+    <img [src]="icon" alt="{{ title }} icon" />
+  </div>
+  <h3 class="card-title">{{ title }}</h3>
 </div>

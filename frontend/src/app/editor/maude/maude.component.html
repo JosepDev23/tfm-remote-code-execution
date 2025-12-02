@@ -1,21 +1,129 @@
-<div class="container">
-  <main class="main">
-    <div class="tabs">
-      <div class="tab active">main.maude</div>
-      <div class="tab active">
-        <button (click)="executeCode()">EXECUTE CODE</button>
+<div class="vscode-container">
+  <!-- Activity Bar (Left Sidebar Icons) -->
+  <aside class="activity-bar">
+    <div class="activity-item active" title="Explorer">
+      <span class="activity-icon">📁</span>
+    </div>
+    <div class="activity-item" title="Search">
+      <span class="activity-icon">🔍</span>
+    </div>
+    <div class="activity-item" (click)="goBack()" title="Back to Home">
+      <span class="activity-icon">🏠</span>
+    </div>
+  </aside>
+
+  <!-- Sidebar (File Explorer) -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-title">EXPLORER</span>
+    </div>
+    <div class="sidebar-content">
+      <div class="folder-section">
+        <div class="folder-header">
+          <span class="folder-icon">▼</span>
+          <span class="folder-name">MAUDE PROJECT</span>
+        </div>
+        <div class="file-list">
+          <div class="file-item active">
+            <span class="file-icon">📄</span>
+            <span class="file-name">main.maude</span>
+          </div>
+        </div>
       </div>
+    </div>
+  </aside>
+
+  <!-- Main Editor Area -->
+  <main class="main-editor">
+    <!-- Tab Bar -->
+    <div class="tab-bar">
       <div class="tab active">
-        <button (click)="deleteContainer()">DELETE CONTAINER</button>
+        <span class="tab-icon">📄</span>
+        <span class="tab-label">main.maude</span>
+        <span class="tab-close">×</span>
+      </div>
+      <div class="tab-actions">
+        <button 
+          class="tab-action-btn run-btn" 
+          (click)="executeCode()"
+          [disabled]="isExecuting"
+          [class.executing]="isExecuting"
+          title="Run Code">
+          <span>{{ isExecuting ? '⏸' : '▶' }}</span>
+        </button>
+        <button 
+          class="tab-action-btn" 
+          (click)="deleteContainer()"
+          title="Delete Container">
+          <span>🗑</span>
+        </button>
       </div>
     </div>
 
-    <div class="editor">
-      <textarea [value]="code" spellcheck="false"></textarea>
+    <!-- Editor Content -->
+    <div class="editor-content">
+      <div class="editor-area">
+        <div class="line-numbers">
+          @for (line of getLineNumbers(); track $index) {
+            <div class="line-number">{{ line }}</div>
+          }
+        </div>
+        <textarea 
+          class="code-editor"
+          [(ngModel)]="code" 
+          spellcheck="false"
+          placeholder="Start coding..."
+          (input)="onCodeChange()"
+          (scroll)="onEditorScroll($event)">
+        </textarea>
+      </div>
     </div>
 
-    <div class="console">
-      <textarea [value]="output" spellcheck="false"></textarea>
+    <!-- Panel (Terminal/Output) -->
+    <div class="panel-container">
+      <div class="panel-tabs">
+        <div class="panel-tab active">
+          <span class="panel-tab-icon">💻</span>
+          <span>OUTPUT</span>
+        </div>
+        <div class="panel-tab">
+          <span class="panel-tab-icon">⚠</span>
+          <span>PROBLEMS</span>
+        </div>
+        <div class="panel-actions">
+          <button class="panel-action-btn" (click)="clearOutput()" title="Clear Output">
+            <span>✕</span>
+          </button>
+        </div>
+      </div>
+      <div class="panel-content">
+        @if (isExecuting) {
+          <div class="output-loading">
+            <div class="loading-spinner"></div>
+            <span>Executing code...</span>
+          </div>
+        }
+        <pre class="output-display" [class.empty]="!output || output.includes('Output will be displayed')">{{ output }}</pre>
+      </div>
     </div>
   </main>
+
+  <!-- Status Bar -->
+  <footer class="status-bar">
+    <div class="status-left">
+      <span class="status-item branch">
+        <span class="status-icon">⎇</span>
+        <span>main</span>
+      </span>
+      <span class="status-item" [class.executing]="isExecuting">
+        <span class="status-dot">●</span>
+        <span>{{ isExecuting ? 'Running' : 'Ready' }}</span>
+      </span>
+    </div>
+    <div class="status-right">
+      <span class="status-item">Ln {{ getCurrentLine() }}, Col {{ getCurrentColumn() }}</span>
+      <span class="status-item">UTF-8</span>
+      <span class="status-item">Maude</span>
+    </div>
+  </footer>
 </div>

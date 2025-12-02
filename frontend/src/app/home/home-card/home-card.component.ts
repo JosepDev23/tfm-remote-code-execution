@@ -11,10 +11,13 @@ export class HomeCardComponent {
   @Input() title: string = ''
   @Input() route: string = ''
   @Input() icon: string = ''
+  @Input() color: string = '#4caf50'
 
   constructor(private readonly router: Router) {}
 
   openEditor(): void {
-    this.router.navigate(['/editor/' + this.route])
+    if (this.route) {
+      this.router.navigate(['/editor/' + this.route])
+    }
   }
 }
