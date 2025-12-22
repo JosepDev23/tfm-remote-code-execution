@@ -30,4 +30,9 @@ export class HomeComponent implements OnInit {
       },
     })
   }
+
+  logout(): void {
+    this.authService.clearToken()
+    this.router.navigate(['/login'])
+  }
 }
