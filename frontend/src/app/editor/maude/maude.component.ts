@@ -34,6 +34,8 @@ export class MaudeComponent implements OnInit {
 
   isExecuting = false
 
+  isDragging = false
+
   constructor(
     private readonly maudeService: MaudeService,
     private readonly authService: AuthService,
@@ -220,5 +222,59 @@ export class MaudeComponent implements OnInit {
 
   private generateId(): string {
     return `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  // Drag and Drop Methods
+  onDragOver(event: DragEvent): void {
+    event.preventDefault()
+    event.stopPropagation()
+    this.isDragging = true
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault()
+    event.stopPropagation()
+    this.isDragging = false
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault()
+    event.stopPropagation()
+    this.isDragging = false
+
+    const files = event.dataTransfer?.files
+    if (!files || files.length === 0) return
+
+    // Process each dropped file
+    Array.from(files).forEach(file => {
+      // Only accept .maude files or text files
+      if (file.name.endsWith('.maude') || file.type === 'text/plain' || file.type === '') {
+        const reader = new FileReader()
+        
+        reader.onload = (e) => {
+          const content = e.target?.result as string
+          
+          // Create new file with the dropped file's name and content
+          const newFile: MaudeFile = {
+            id: this.generateId(),
+            name: file.name.endsWith('.maude') ? file.name : `${file.name}.maude`,
+            content: content || ''
+          }
+          
+          this.files.push(newFile)
+          this.switchFile(newFile.id)
+        }
+        
+        reader.onerror = () => {
+          console.error('Error reading file:', file.name)
+          this.output = `// Error: Failed to read file ${file.name}`
+        }
+        
+        reader.readAsText(file)
+      } else {
+        console.warn('Unsupported file type:', file.name)
+        this.output = `// Error: Only .maude files are supported. Received: ${file.name}`
+      }
+    })
   }
 }

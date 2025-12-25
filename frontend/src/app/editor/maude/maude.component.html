@@ -1,4 +1,20 @@
-<div class="vscode-container">
+<div 
+  class="vscode-container" 
+  (dragover)="onDragOver($event)" 
+  (dragleave)="onDragLeave($event)" 
+  (drop)="onDrop($event)"
+  [class.dragging]="isDragging">
+  
+  <!-- Drag and Drop Overlay -->
+  @if (isDragging) {
+    <div class="drop-overlay">
+      <div class="drop-message">
+        <span class="drop-icon">📁</span>
+        <h2>Drop Maude files here</h2>
+        <p>Files will be imported into the editor</p>
+      </div>
+    </div>
+  }
   <!-- Activity Bar (Left Sidebar Icons) -->
   <aside class="activity-bar">
     <div class="activity-item active" title="Explorer">
