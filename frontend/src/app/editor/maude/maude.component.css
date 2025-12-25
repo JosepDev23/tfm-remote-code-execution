@@ -448,11 +448,28 @@
   color: #6a6a6a;
 }
 
+/* Panel Resize Handle */
+.panel-resize-handle {
+  height: 4px;
+  background: #2d2d2d;
+  cursor: ns-resize;
+  transition: background 0.2s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.panel-resize-handle:hover {
+  background: #007acc;
+}
+
+.panel-resize-handle:active {
+  background: #007acc;
+}
+
 /* Panel (Terminal/Output) */
 .panel-container {
   display: flex;
   flex-direction: column;
-  height: 200px;
   background: #1e1e1e;
   border-top: 1px solid #2d2d2d;
 }

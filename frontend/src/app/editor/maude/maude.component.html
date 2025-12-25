@@ -119,8 +119,11 @@
       </div>
     </div>
 
+    <!-- Panel Resize Handle -->
+    <div class="panel-resize-handle" (mousedown)="startResize($event)"></div>
+
     <!-- Panel (Terminal/Output) -->
-    <div class="panel-container">
+    <div class="panel-container" [style.height.px]="panelHeight">
       <div class="panel-tabs">
         <div class="panel-tab active">
           <span class="panel-tab-icon">💻</span>

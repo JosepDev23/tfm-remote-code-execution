@@ -36,6 +36,9 @@ export class MaudeComponent implements OnInit {
 
   isDragging = false
 
+  panelHeight = 200 // Default height in pixels
+  isResizing = false
+
   constructor(
     private readonly maudeService: MaudeService,
     private readonly authService: AuthService,
@@ -296,5 +299,33 @@ export class MaudeComponent implements OnInit {
     
     // Clean up the temporary URL
     URL.revokeObjectURL(url)
+  }
+
+  // Panel Resize Methods
+  startResize(event: MouseEvent): void {
+    event.preventDefault()
+    this.isResizing = true
+    
+    const onMouseMove = (e: MouseEvent) => {
+      if (!this.isResizing) return
+      
+      const containerHeight = window.innerHeight
+      const newHeight = containerHeight - e.clientY - 22 // 22px for status bar
+      
+      // Set min and max heights
+      const minHeight = 100
+      const maxHeight = containerHeight - 200 // Leave space for editor
+      
+      this.panelHeight = Math.max(minHeight, Math.min(newHeight, maxHeight))
+    }
+    
+    const onMouseUp = () => {
+      this.isResizing = false
+      document.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('mouseup', onMouseUp)
+    }
+    
+    document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('mouseup', onMouseUp)
   }
 }
