@@ -277,4 +277,24 @@ export class MaudeComponent implements OnInit {
       }
     })
   }
+
+  downloadFile(): void {
+    const activeFile = this.getActiveFile()
+    if (!activeFile) return
+
+    // Create a Blob with the file content
+    const blob = new Blob([activeFile.content], { type: 'text/plain' })
+    
+    // Create a temporary URL for the blob
+    const url = URL.createObjectURL(blob)
+    
+    // Create a temporary anchor element and trigger download
+    const link = document.createElement('a')
+    link.href = url
+    link.download = activeFile.name
+    link.click()
+    
+    // Clean up the temporary URL
+    URL.revokeObjectURL(url)
+  }
 }

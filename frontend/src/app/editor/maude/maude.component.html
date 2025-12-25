@@ -85,6 +85,12 @@
           <span>{{ isExecuting ? '⏸' : '▶' }}</span>
         </button>
         <button 
+          class="tab-action-btn download-btn" 
+          (click)="downloadFile()"
+          title="Download File">
+          <span>⬇</span>
+        </button>
+        <button 
           class="tab-action-btn" 
           (click)="deleteContainer()"
           title="Delete Container">

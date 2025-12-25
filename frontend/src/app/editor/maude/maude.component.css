@@ -384,6 +384,14 @@
   animation: pulse 1s ease-in-out infinite;
 }
 
+.tab-action-btn.download-btn {
+  color: #89d185;
+}
+
+.tab-action-btn.download-btn:hover {
+  color: #4ec9b0;
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
