@@ -2,9 +2,9 @@ import { Component } from '@angular/core'
 import { Router } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { BaseEditorComponent } from '../base/base-editor.component'
-import { MaudeService } from '../../services/maude/maude.service'
-import { AuthService } from '../../services/auth/auth.service'
-import { BaseContainerService } from '../../services/base/base-container.service'
+import { MaudeService } from '../../../services/maude/maude.service'
+import { AuthService } from '../../../services/auth/auth.service'
+import { BaseContainerService } from '../../../services/base/base-container.service'
 
 /**
  * Maude language code editor component.

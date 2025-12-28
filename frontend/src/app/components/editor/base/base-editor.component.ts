@@ -1,7 +1,7 @@
 import { OnInit, Directive } from '@angular/core'
 import { Router } from '@angular/router'
-import { AuthService } from '../../services/auth/auth.service'
-import { BaseContainerService } from '../../services/base/base-container.service'
+import { AuthService } from '../../../services/auth/auth.service'
+import { BaseContainerService } from '../../../services/base/base-container.service'
 
 export interface EditorFile {
   id: string
