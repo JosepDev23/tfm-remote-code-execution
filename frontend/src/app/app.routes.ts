@@ -3,6 +3,7 @@ import { HomeComponent } from './home/home.component'
 import { LoginComponent } from './login/login.component'
 import { RegisterComponent } from './register/register.component'
 import { MaudeComponent } from './editor/maude/maude.component'
+import { CComponent } from './editor/c/c.component'
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -10,5 +11,6 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'editor/maude', component: MaudeComponent },
+  { path: 'editor/c', component: CComponent },
 ]
 
