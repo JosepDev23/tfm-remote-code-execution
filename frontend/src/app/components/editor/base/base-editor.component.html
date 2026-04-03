@@ -125,13 +125,16 @@
     <!-- Panel (Terminal/Output) -->
     <div class="panel-container" [style.height.px]="panelHeight">
       <div class="panel-tabs">
-        <div class="panel-tab active">
+        <div class="panel-tab" [class.active]="activePanel === 'output'" (click)="switchPanel('output')">
           <span class="panel-tab-icon">💻</span>
           <span>OUTPUT</span>
         </div>
-        <div class="panel-tab">
+        <div class="panel-tab" [class.active]="activePanel === 'problems'" (click)="switchPanel('problems')">
           <span class="panel-tab-icon">⚠</span>
           <span>PROBLEMS</span>
+          @if (error) {
+            <span class="panel-tab-badge">!</span>
+          }
         </div>
         <div class="panel-actions">
           <button class="panel-action-btn" (click)="clearOutput()" title="Clear Output">
@@ -146,7 +149,12 @@
             <span>Executing code...</span>
           </div>
         }
-        <pre class="output-display" [class.empty]="!output || output.includes('Output will be displayed')">{{ output }}</pre>
+        @if (activePanel === 'output') {
+          <pre class="output-display" [class.empty]="!output || output.includes('Output will be displayed')">{{ output }}</pre>
+        }
+        @if (activePanel === 'problems') {
+          <pre class="output-display problems-display" [class.empty]="!error">{{ error || '// No problems detected' }}</pre>
+        }
       </div>
     </div>
   </main>

@@ -11,6 +11,20 @@ form {
   border: solid 1px #2c2f3a;
 }
 
+.app-title {
+  position: fixed;
+  top: 1.5rem;
+  left: 2rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, #3c919c, #2d7781);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
 .form-title {
   color: #cfd2dc;
   font-size: 2rem;

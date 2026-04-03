@@ -3,6 +3,7 @@ import Docker from 'dockerode'
 import { PassThrough } from 'stream'
 import { v4 as uuidv4 } from 'uuid'
 import {
+  CodeExecutionTimeoutException,
   ContainerLimitExceededException,
   UserContainerExistsException,
   UserContainerNotFoundException,
@@ -89,8 +90,8 @@ export class MaudeContainerService implements OnModuleDestroy {
       const chunksOut: Buffer[] = []
       const chunksErr: Buffer[] = []
       const timer = setTimeout(
-        () => reject(new Error('Execution timeout')),
-        30_000,
+        () => reject(new CodeExecutionTimeoutException(5)),
+        5_000,
       )
 
       stdoutStream.on('data', (c) => chunksOut.push(c))

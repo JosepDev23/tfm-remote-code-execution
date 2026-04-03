@@ -3,7 +3,7 @@ import { HttpException, HttpStatus } from '@nestjs/common'
 export class UserContainerExistsException extends HttpException {
   constructor(containerId: string) {
     super(
-      `El usuario ya tiene un contenedor activo (${containerId}).`,
+      `User already has an active container (${containerId}).`,
       HttpStatus.CONFLICT,
     )
   }
@@ -12,7 +12,7 @@ export class UserContainerExistsException extends HttpException {
 export class ContainerLimitExceededException extends HttpException {
   constructor(limit: number) {
     super(
-      `Se alcanzó el límite de ${limit} contenedores activos.`,
+      `Active container limit of ${limit} has been reached.`,
       HttpStatus.TOO_MANY_REQUESTS,
     )
   }
@@ -21,8 +21,19 @@ export class ContainerLimitExceededException extends HttpException {
 export class UserContainerNotFoundException extends HttpException {
   constructor(userId: string) {
     super(
-      `El usuario «${userId}» no tiene ningún contenedor activo.`,
+      `User «${userId}» does not have an active container.`,
       HttpStatus.NOT_FOUND,
+    )
+  }
+}
+
+export class CodeExecutionTimeoutException extends HttpException {
+  constructor(timeoutSeconds?: number) {
+    super(
+      timeoutSeconds
+        ? `Code execution exceeded the time limit of ${timeoutSeconds} seconds.`
+        : `Code execution exceeded the time limit.`,
+      HttpStatus.REQUEST_TIMEOUT,
     )
   }
 }

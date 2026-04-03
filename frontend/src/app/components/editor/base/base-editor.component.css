@@ -555,6 +555,24 @@
   font-style: italic;
 }
 
+.problems-display {
+  color: #f48771;
+}
+
+.panel-tab-badge {
+  background: #e74c3c;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 2px;
+}
+
 .output-loading {
   display: flex;
   align-items: center;

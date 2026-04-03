@@ -27,10 +27,12 @@ export abstract class BaseEditorComponent implements OnInit {
 
   // Editor state
   output = `// Output will be displayed here`
+  error = ''
   isExecuting = false
   isDragging = false
   panelHeight = 200 // Default height in pixels
   isResizing = false
+  activePanel: 'output' | 'problems' = 'output'
 
   constructor(
     protected readonly authService: AuthService,
@@ -80,13 +82,14 @@ export abstract class BaseEditorComponent implements OnInit {
     this.getContainerService().executeCode(activeFile.content).subscribe({
       next: (response) => {
         this.output = `// Executed: ${activeFile.name}\n${response.stdout || 'No output returned'}`
+        if (response.stderr) {
+          this.error = `// Error: ${activeFile.name}\n${response.stderr}`
+        }
         this.isExecuting = false
-        console.log('Code executed successfully:', response)
       },
       error: (error) => {
-        this.output = `// Error executing ${activeFile.name}\nError: ${error.message || 'Failed to execute code'}`
+        this.error = `// Error executing ${activeFile.name}\nError: ${error.error.message || 'Failed to execute code'}`
         this.isExecuting = false
-        console.error('Error executing code:', error)
       },
     })
   }
@@ -111,7 +114,15 @@ export abstract class BaseEditorComponent implements OnInit {
 
   // Output Methods
   clearOutput(): void {
-    this.output = '// Output cleared'
+    if (this.activePanel === 'output') {
+      this.output = '// Output cleared'
+    } else {
+      this.error = ''
+    }
+  }
+
+  switchPanel(panel: 'output' | 'problems'): void {
+    this.activePanel = panel
   }
 
   // Editor Methods
