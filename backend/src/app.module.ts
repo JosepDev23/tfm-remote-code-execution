@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { SwaggerModule } from '@nestjs/swagger'
-import { MaudeContainerModule } from './docker/maude-container.module'
+import { MaudeContainerModule } from './maude-container/maude-container.module'
 import { AuthModule } from './auth/auth.module'
 
 @Module({
