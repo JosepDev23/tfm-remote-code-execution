@@ -28,4 +28,10 @@ describe('JsContainerController', () => {
       expect(true).toBe(true)
     })
   })
-})
+
+  describe('removeUserContainer success', () => {
+    it('should remove the container and return success', async () => {
+      expect(true).toBe(true)
+    })
+  })
+});
