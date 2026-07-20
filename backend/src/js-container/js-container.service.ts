@@ -23,10 +23,28 @@ export class JsContainerService implements OnModuleDestroy {
 
   constructor(private readonly jwtStrategy: JwtStrategy) {}
 
-  async createUserContainer(user: Express.User): Promise<string> {
+  private getUserId(user: Express.User | string | any): string {
+    if (!user) {
+      throw new Error('User is undefined or null')
+    }
+    if (typeof user === 'string') {
+      return user
+    }
     const validatedUser = this.jwtStrategy.validate(user)
+    if (!validatedUser) {
+      throw new Error('User validation failed')
+    }
+    const id = validatedUser._id || validatedUser.id
+    if (!id) {
+      throw new Error('User ID not found in payload')
+    }
+    return typeof id === 'object' ? id.toString() : id
+  }
 
-    const existing = this.userContainers.get(validatedUser.id)
+  async createUserContainer(user: Express.User): Promise<string> {
+    const userId = this.getUserId(user)
+
+    const existing = this.userContainers.get(userId)
     if (existing) {
       throw new UserContainerExistsException(existing)
     }
@@ -48,7 +66,7 @@ export class JsContainerService implements OnModuleDestroy {
 
     await container.start()
 
-    this.userContainers.set(validatedUser.id, container.id)
+    this.userContainers.set(userId, container.id)
 
     return container.id
   }
@@ -58,11 +76,11 @@ export class JsContainerService implements OnModuleDestroy {
     code: string,
   ): Promise<{ stdout: string; stderr: string }> {
     // First, validate user and update last activity
-    const validatedUser = this.jwtStrategy.validate(user)
-    this.lastActivity.set(validatedUser.id, Date.now())
+    const userId = this.getUserId(user)
+    this.lastActivity.set(userId, Date.now())
 
     // Then, do everything else
-    let containerId = this.userContainers.get(validatedUser.id)
+    let containerId = this.userContainers.get(userId)
     if (!containerId) containerId = await this.createUserContainer(user)
 
     const container = this.docker.getContainer(containerId)
@@ -112,28 +130,45 @@ export class JsContainerService implements OnModuleDestroy {
     })
   }
 
-  async removeUserContainer(user: Express.User): Promise<void> {
-    const validatedUser = this.jwtStrategy.validate(user)
+  async removeUserContainer(user: Express.User | string): Promise<void> {
+    const userId = this.getUserId(user)
 
-    const containerId: string = this.userContainers.get(validatedUser.id)
+    const containerId = this.userContainers.get(userId)
 
     if (!containerId) {
-      throw new UserContainerNotFoundException(validatedUser.id)
+      throw new UserContainerNotFoundException(userId)
     }
+
+    this.userContainers.delete(userId)
+    this.lastActivity.delete(userId)
 
     const container: Docker.Container = this.docker.getContainer(containerId)
 
-    await container.stop()
-    await container.remove()
+    try {
+      await container.stop()
+    } catch (e: any) {
+      if (e.statusCode !== 304 && e.statusCode !== 404) {
+        console.warn(`Warning stopping container ${containerId}: ${e.message || e}`)
+      }
+    }
 
-    this.userContainers.delete(validatedUser.id)
-
-    this.lastActivity.delete(validatedUser.id)
+    try {
+      await container.remove()
+    } catch (e: any) {
+      if (e.statusCode !== 404 && e.statusCode !== 409) {
+        throw e
+      }
+      console.warn(`Warning removing container ${containerId}: ${e.message || e}`)
+    }
   }
 
   async onModuleDestroy() {
     for (const userId of this.userContainers.keys()) {
-      await this.removeUserContainer(userId)
+      try {
+        await this.removeUserContainer(userId)
+      } catch (e) {
+        console.error(`Error removing container for user ${userId} on module destroy:`, e)
+      }
     }
   }
 
@@ -146,20 +181,35 @@ export class JsContainerService implements OnModuleDestroy {
         const containerId = this.userContainers.get(userId)
         if (!containerId) continue
 
-        try {
-          const container = this.docker.getContainer(containerId)
-          await container.stop()
-          await container.remove()
-        } catch (e) {
-          console.error('Error cleaning container', containerId, e)
-        }
-
         this.userContainers.delete(userId)
         this.lastActivity.delete(userId)
 
-        console.log(
-          `🧹 JS container for user ${userId} removed due to inactivity`,
-        )
+        try {
+          const container = this.docker.getContainer(containerId)
+
+          try {
+            await container.stop()
+          } catch (e: any) {
+            if (e.statusCode !== 304 && e.statusCode !== 404) {
+              console.warn(`Warning stopping container ${containerId}: ${e.message || e}`)
+            }
+          }
+
+          try {
+            await container.remove()
+          } catch (e: any) {
+            if (e.statusCode !== 404 && e.statusCode !== 409) {
+              throw e
+            }
+            console.warn(`Warning removing container ${containerId}: ${e.message || e}`)
+          }
+
+          console.log(
+            `🧹 JS container for user ${userId} removed due to inactivity`,
+          )
+        } catch (e) {
+          console.error('Error cleaning container', containerId, e)
+        }
       }
     }
   }
