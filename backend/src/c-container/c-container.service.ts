@@ -1,4 +1,8 @@
-import { Injectable, NotImplementedException, OnModuleDestroy } from '@nestjs/common'
+import {
+  Injectable,
+  NotImplementedException,
+  OnModuleDestroy,
+} from '@nestjs/common'
 import Docker from 'dockerode'
 import { PassThrough } from 'stream'
 import { v4 as uuidv4 } from 'uuid'
@@ -62,6 +66,11 @@ export class CContainerService implements OnModuleDestroy {
       AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
+      HostConfig: {
+        Memory: 512 * 1024 * 1024, // 512 MB
+        MemorySwap: 512 * 1024 * 1024, // Limit swap to memory limit (no swap storage usage)
+        NanoCpus: 1000000000, // 1 CPU core
+      },
     })
 
     await container.start()
@@ -149,7 +158,9 @@ export class CContainerService implements OnModuleDestroy {
       await container.stop()
     } catch (e: any) {
       if (e.statusCode !== 304 && e.statusCode !== 404) {
-        console.warn(`Warning stopping container ${containerId}: ${e.message || e}`)
+        console.warn(
+          `Warning stopping container ${containerId}: ${e.message || e}`,
+        )
       }
     }
 
@@ -159,7 +170,9 @@ export class CContainerService implements OnModuleDestroy {
       if (e.statusCode !== 404 && e.statusCode !== 409) {
         throw e
       }
-      console.warn(`Warning removing container ${containerId}: ${e.message || e}`)
+      console.warn(
+        `Warning removing container ${containerId}: ${e.message || e}`,
+      )
     }
   }
 
@@ -168,7 +181,10 @@ export class CContainerService implements OnModuleDestroy {
       try {
         await this.removeUserContainer(userId)
       } catch (e) {
-        console.error(`Error removing container for user ${userId} on module destroy:`, e)
+        console.error(
+          `Error removing container for user ${userId} on module destroy:`,
+          e,
+        )
       }
     }
   }
@@ -192,7 +208,9 @@ export class CContainerService implements OnModuleDestroy {
             await container.stop()
           } catch (e: any) {
             if (e.statusCode !== 304 && e.statusCode !== 404) {
-              console.warn(`Warning stopping container ${containerId}: ${e.message || e}`)
+              console.warn(
+                `Warning stopping container ${containerId}: ${e.message || e}`,
+              )
             }
           }
 
@@ -202,7 +220,9 @@ export class CContainerService implements OnModuleDestroy {
             if (e.statusCode !== 404 && e.statusCode !== 409) {
               throw e
             }
-            console.warn(`Warning removing container ${containerId}: ${e.message || e}`)
+            console.warn(
+              `Warning removing container ${containerId}: ${e.message || e}`,
+            )
           }
 
           console.log(

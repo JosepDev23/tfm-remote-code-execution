@@ -62,6 +62,11 @@ export class MaudeContainerService implements OnModuleDestroy {
       AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
+      HostConfig: {
+        Memory: 512 * 1024 * 1024, // 512 MB
+        MemorySwap: 512 * 1024 * 1024, // Limit swap to memory limit (no swap storage usage)
+        NanoCpus: 1000000000, // 1 CPU core
+      },
     })
 
     await container.start()
@@ -148,7 +153,9 @@ export class MaudeContainerService implements OnModuleDestroy {
       await container.stop()
     } catch (e: any) {
       if (e.statusCode !== 304 && e.statusCode !== 404) {
-        console.warn(`Warning stopping container ${containerId}: ${e.message || e}`)
+        console.warn(
+          `Warning stopping container ${containerId}: ${e.message || e}`,
+        )
       }
     }
 
@@ -158,7 +165,9 @@ export class MaudeContainerService implements OnModuleDestroy {
       if (e.statusCode !== 404 && e.statusCode !== 409) {
         throw e
       }
-      console.warn(`Warning removing container ${containerId}: ${e.message || e}`)
+      console.warn(
+        `Warning removing container ${containerId}: ${e.message || e}`,
+      )
     }
   }
 
@@ -167,7 +176,10 @@ export class MaudeContainerService implements OnModuleDestroy {
       try {
         await this.removeUserContainer(userId)
       } catch (e) {
-        console.error(`Error removing container for user ${userId} on module destroy:`, e)
+        console.error(
+          `Error removing container for user ${userId} on module destroy:`,
+          e,
+        )
       }
     }
   }
@@ -191,7 +203,9 @@ export class MaudeContainerService implements OnModuleDestroy {
             await container.stop()
           } catch (e: any) {
             if (e.statusCode !== 304 && e.statusCode !== 404) {
-              console.warn(`Warning stopping container ${containerId}: ${e.message || e}`)
+              console.warn(
+                `Warning stopping container ${containerId}: ${e.message || e}`,
+              )
             }
           }
 
@@ -201,7 +215,9 @@ export class MaudeContainerService implements OnModuleDestroy {
             if (e.statusCode !== 404 && e.statusCode !== 409) {
               throw e
             }
-            console.warn(`Warning removing container ${containerId}: ${e.message || e}`)
+            console.warn(
+              `Warning removing container ${containerId}: ${e.message || e}`,
+            )
           }
 
           console.log(

@@ -34,4 +34,4 @@ describe('CContainerController', () => {
       expect(true).toBe(true)
     })
   })
-});
+})

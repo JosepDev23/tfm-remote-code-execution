@@ -34,4 +34,4 @@ describe('JsContainerController', () => {
       expect(true).toBe(true)
     })
   })
-});
+})

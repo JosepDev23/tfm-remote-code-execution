@@ -6,6 +6,12 @@ import { JsContainerModule } from './js-container/js-container.module'
 import { AuthModule } from './auth/auth.module'
 
 @Module({
-  imports: [SwaggerModule, MaudeContainerModule, CContainerModule, JsContainerModule, AuthModule],
+  imports: [
+    SwaggerModule,
+    MaudeContainerModule,
+    CContainerModule,
+    JsContainerModule,
+    AuthModule,
+  ],
 })
 export class AppModule {}

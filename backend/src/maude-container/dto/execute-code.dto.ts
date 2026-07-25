@@ -2,7 +2,8 @@ import { ApiProperty } from '@nestjs/swagger'
 
 export class ExecuteCodeDto {
   @ApiProperty({
-    example: 'fmod HELLO-WORLD is protecting STRING . op hello : -> String . eq hello = "Hello, World!" . endfm',
+    example:
+      'fmod HELLO-WORLD is protecting STRING . op hello : -> String . eq hello = "Hello, World!" . endfm',
     description: 'The Maude code to be executed in the container.',
   })
   code: string

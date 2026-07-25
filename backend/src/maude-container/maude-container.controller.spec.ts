@@ -34,4 +34,4 @@ describe('MaudeContainerController', () => {
       expect(true).toBe(true)
     })
   })
-});
+})

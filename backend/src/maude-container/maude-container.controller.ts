@@ -19,10 +19,7 @@ import {
 import { MaudeContainerService } from './maude-container.service'
 import { JwtGuard } from 'src/auth/guards/jwt.guard'
 import { Request } from 'express'
-import {
-  ExecuteCodeDto,
-  ExecuteCodeResponseDto,
-} from './dto/execute-code.dto'
+import { ExecuteCodeDto, ExecuteCodeResponseDto } from './dto/execute-code.dto'
 
 @ApiTags('Maude Container')
 @ApiBearerAuth()
